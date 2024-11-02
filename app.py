@@ -98,5 +98,13 @@ def delete_file(date_folder, filename):
         os.remove(file_path)
     return redirect(url_for('index'))
 
+# 특별 파일 삭제 라우트
+@app.route('/delete/special/<filename>', methods=['POST'])
+def delete_special_file(filename):
+    file_path = os.path.join(app.config['SPECIAL_FOLDER'], filename)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+    return redirect(url_for('index'))
+
 if __name__ == '__main__':
     app.run(debug=True)
