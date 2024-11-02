@@ -3,198 +3,253 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload</title>
+    <title>File Management Dashboard</title>
     <style>
+        /* 기본적인 스타일 설정 */
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            background-color: #f4f7fa;
+            margin: 0;
             display: flex;
-            justify-content: center;
         }
 
-        .container {
-            max-width: 600px;
+        /* 사이드바 스타일 */
+        .sidebar {
+            width: 250px;
+            background-color: #34495e;
+            color: #ecf0f1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            height: 100vh;
+        }
+
+        .sidebar h1 {
+            font-size: 24px;
+            margin: 0;
+            padding: 20px;
+            color: #ecf0f1;
+        }
+
+        .menu-item {
             width: 100%;
+            padding: 15px 0;
             text-align: center;
+            font-size: 16px;
+            cursor: pointer;
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s;
         }
 
-        h1, h2 {
-            color: #333;
+        .menu-item:hover {
+            color: #ffffff;
+        }
+
+        /* 컨텐츠 스타일 */
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header h2 {
+            color: #34495e;
+            font-size: 28px;
+            margin: 0;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            width: 45%;
+        }
+
+        .card h3 {
+            color: #34495e;
+            font-size: 24px;
+        }
+
+        .card p {
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+
+        /* 파일 업로드 및 목록 스타일 */
+        .upload-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .upload-form, .table-section {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table, th, td {
-            border: 1px solid #ddd;
+            margin-top: 10px;
         }
 
         th, td {
             padding: 12px;
             text-align: left;
+            border-bottom: 1px solid #ecf0f1;
         }
 
         th {
-            background-color: #f4f4f4;
+            background-color: #34495e;
+            color: #ecf0f1;
         }
 
-        /* Download 버튼과 Delete 버튼 스타일 */
-        a.download-btn, form.delete-form button {
-            text-decoration: none;
-            padding: 6px 12px;
-            border-radius: 4px;
+        .download-btn, .delete-btn, .upload-btn {
+            padding: 10px 20px;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
-            width: 100px;
+            text-decoration: none;
             display: inline-block;
-            text-align: center;
+            margin: 5px 0;
         }
 
-        /* Download 버튼 색상 */
-        a.download-btn {
-            background-color: #4CAF50;
-            color: white;
+        .download-btn {
+            background-color: #3498db;
+            color: #fff;
         }
 
-        a.download-btn:hover {
-            background-color: #45a049;
-        }
-
-        /* Delete 버튼 스타일 */
-        form.delete-form button {
-            background-color: #f44336;
-            color: white;
-        }
-
-        form.delete-form button:hover {
-            background-color: #d32f2f;
-        }
-
-        .upload-form {
-            margin-top: 20px;
+        .delete-btn {
+            background-color: #e74c3c;
+            color: #fff;
         }
 
         .upload-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
+            background-color: #1D9B8A;
+            color: #fff;
+            font-size: 16px;
             border: none;
             border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .upload-btn:hover {
-            background-color: #45a049;
-        }
-
-        /* Choose file 버튼 스타일 */
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-        }
-
-        .file-input-wrapper input[type="file"] {
-            font-size: 100px;
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-        }
-
-        .file-input-button {
-            display: inline-block;
-            background-color: #ffeb3b;
-            color: black;
             padding: 10px 15px;
-            border-radius: 4px;
             cursor: pointer;
+            display: inline-block;
+            margin: 5px 5px 0 0;
         }
 
-        .file-input-button:hover {
-            background-color: #fdd835;
-        }
-
-        /* 선택된 파일 이름 스타일 */
-        #file-name {
-            margin-top: 10px;
-            font-weight: bold;
+        /* Upload Fail Update 버튼 스타일 */
+        .fail-upload-btn {
+            background-color: #EA7600; /* 어두운 노란색 */
+            color: #fff;
         }
 
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Uploaded ZIP Files</h1>
-        
-        <!-- 파일 목록을 표로 출력 -->
-        <div id="file-list">
-            <table>
-                <tr>
-                    <th>File Name</th>
-                    <th>Action</th>
-                </tr>
-                {% for file in files %}
-                <tr>
-                    <td>{{ file }}</td>
-                    <td>
-                        <a href="/download/{{ file }}" class="download-btn">Download</a>
-                        <form action="/delete/{{ file }}" method="post" class="delete-form" style="display:inline;">
-                            <button type="submit">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-
-        <h2>Upload New ZIP File</h2>
-        <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data" class="upload-form">
-            <div class="file-input-wrapper">
-                <button class="file-input-button" type="button">Choose File</button>
-                <input type="file" name="file" id="file-input">
-            </div>
-            <br><br>
-            <div id="file-name"></div> <!-- 선택된 파일 이름 표시 -->
-            <input type="submit" value="Upload" class="upload-btn">
-        </form>
+    <!-- 사이드바 -->
+    <div class="sidebar">
+        <h1>MEV FMS</h1>
+        <a href="#" class="menu-item">Dashboard</a>
+        <a href="#log-uploads" class="menu-item">Log Uploads</a>
+        <a href="#special-files" class="menu-item">Special Files</a>
     </div>
 
-    <script>
-        // 파일 선택 시 파일 이름을 표시
-        document.getElementById('file-input').addEventListener('change', function() {
-            var fileName = this.files[0].name;
-            document.getElementById('file-name').textContent = 'Selected file: ' + fileName;
-        });
+    <!-- 메인 콘텐츠 -->
+    <div class="content">
+        <div class="header">
+            <h2>File Management Server</h2>
+        </div>
 
-        // 업로드 후 목록 갱신
-        document.getElementById('upload-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // 기본 폼 제출 동작 방지
+        <!-- 통계 섹션 -->
+        <div class="stats">
+            <div class="card">
+                <h3>Log Files</h3>
+                <p>Total: {{ files_by_date | length }}</p>
+            </div>
+            <div class="card">
+                <h3>Special Files</h3>
+                <p>Total: {{ special_files | length }}</p>
+            </div>
+        </div>
 
-            var formData = new FormData(this);
+        <!-- 파일 업로드 섹션 -->
+        <div class="upload-section">
+            <div class="upload-form" id="log-uploads">
+                <h3>Log Files Upload</h3>
+                <form action="/upload" method="post" enctype="multipart/form-data">
+                    <input type="file" name="file" required>
+                    <button type="submit" class="upload-btn">Upload Log</button>
+                </form>
+            </div>
 
-            fetch('/upload', {
-                method: 'POST',
-                body: formData
-            }).then(response => {
-                if (response.ok) {
-                    // 업로드 후 파일 목록 갱신
-                    fetch('/').then(response => response.text()).then(html => {
-                        var parser = new DOMParser();
-                        var doc = parser.parseFromString(html, 'text/html');
-                        var newFileList = doc.getElementById('file-list').innerHTML;
-                        document.getElementById('file-list').innerHTML = newFileList;
-                    });
-                } else {
-                    console.error('File upload failed.');
-                }
-            }).catch(error => {
-                console.error('Error:', error);
-            });
-        });
-    </script>
+            <!-- 날짜별 파일 목록 -->
+            <div class="table-section">
+                <h3>Uploaded Log Files</h3>
+                {% for date_folder, files in files_by_date.items() %}
+                    <h4>{{ date_folder }}</h4>
+                    <table>
+                        <tr>
+                            <th>File Name</th>
+                            <th>Action</th>
+                        </tr>
+                        {% for file in files %}
+                        <tr>
+                            <td>{{ file }}</td>
+                            <td>
+                                <a href="{{ url_for('download_file', date_folder=date_folder, filename=file) }}" class="download-btn">Download</a>
+                                <form action="{{ url_for('delete_file', date_folder=date_folder, filename=file) }}" method="post" style="display:inline;">
+                                    <button type="submit" class="delete-btn">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                {% endfor %}
+            </div>
+
+            <!-- 특별 파일 업로드 및 다운로드 -->
+            <div class="upload-form" id="special-files">
+                <h3>Special File Upload</h3>
+                <form action="/upload" method="post" enctype="multipart/form-data">
+                    <input type="file" name="file" required>
+                    <button type="submit" name="special_type" value="success_update" class="upload-btn">Upload Success Update</button>
+                    <button type="submit" name="special_type" value="fail_update" class="upload-btn fail-upload-btn">Upload Fail Update</button>
+                </form>
+            </div>
+
+            <div class="table-section">
+                <h3>Download Special Files</h3>
+                <table>
+                    <tr>
+                        <th>File Name</th>
+                        <th>Action</th>
+                    </tr>
+                    {% for file in special_files %}
+                    <tr>
+                        <td>{{ file }}</td>
+                        <td><a href="{{ url_for('download_special_file', filename=file) }}" class="download-btn">Download</a></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
